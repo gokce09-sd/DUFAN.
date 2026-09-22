@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DUFAN - Gamer Profile</title>
+    
+    <!-- Gotik ve Oyuncu Fontları -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=UnifrakturMaguntia&family=Cinzel:wght@700;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            /* GIF ARKA PLAN EKLENTİSİ */
+            background-color: #020002;
+            background-image: url('arkaplan.gif');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            
+            color: #e0e0e0;
+            font-family: 'MedievalSharp', cursive;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* PARÇACIK CANVAS */
+        #particles-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* KARANLIK SİS & PARLAMA */
+        .fog-overlay {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(200, 0, 20, 0.35) 0%, rgba(0, 0, 0, 0) 70%);
+            animation: gothicPulse 4s infinite alternate ease-in-out;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes gothicPulse {
+            0% { transform: scale(0.8); opacity: 0.3; filter: blur(30px); }
+            100% { transform: scale(1.3); opacity: 0.8; filter: blur(50px); }
+        }
+
+        /* GİRİŞ (WELCOME) EKRANI */
+        #welcome-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #020001;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        /* ŞİMŞEK ÇAKMA EFEKTİ */
+        .lightning-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,0,30,0.1) 0%, rgba(0,0,0,0.95) 80%);
+            animation: flash 6s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes flash {
+            0%, 92%, 98% { opacity: 0.3; }
+            94% { opacity: 0.9; background: radial-gradient(circle, rgba(255,0,30,0.3) 0%, rgba(0,0,0,0.8) 80%); }
+            96% { opacity: 0.4; }
+        }
+
+        /* RİTÜEL HALKASI & BUTON KAPSAYICI */
+        .entry-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 320px;
+            height: 320px;
+        }
+
+        /* DÖNEN GOTİK RÜN HALKASI */
+        .rune-circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px dashed #ff001e;
+            border-radius: 50%;
+            box-shadow: 0 0 25px #ff001e, inset 0 0 20px #8b0000;
+            animation: rotateCircle 18s linear infinite;
+        }
+
+        .rune-circle::before {
+            content: '⚔ ☠ ⚔ ☠ ⚔ ☠ ⚔ ☠';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ff001e;
+            font-size: 1.2rem;
+            letter-spacing: 25px;
+            text-shadow: 0 0 10px #ff001e;
+        }
+
+        @keyframes rotateCircle {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ENTER BUTONU */
+        .play-btn {
+            position: relative;
+            z-index: 2;
+            font-family: 'Cinzel', serif;
+            font-weight: 900;
+            font-size: 2.2rem;
+            letter-spacing: 6px;
+            color: #ffffff;
+            background: radial-gradient(circle, #8b0000 0%, #200003 100%);
+            border: 2px solid #ff001e;
+            padding: 20px 45px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 40px #ff001e, inset 0 0 15px #ff001e;
+            text-shadow: 0 0 15px #ff001e, 0 0 30px #ffffff;
+            transition: all 0.4s ease;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.15);
+            border-color: #ffffff;
+            box-shadow: 0 0 70px #ff001e, inset 0 0 30px #ffffff;
+            color: #ff3b56;
+        }
+
+        /* PROFiL KARTI */
+        .profile-card {
+            background: rgba(10, 2, 5, 0.94);
+            border: 2px solid #6b000d;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 440px;
+            padding: 40px 30px 25px;
+            box-shadow: 0 0 50px rgba(255, 0, 30, 0.4),
+                        inset 0 0 30px rgba(139, 0, 0, 0.5);
+            backdrop-filter: blur(12px);
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* FOTOĞRAF VE DÖNEN ÇERÇEVE */
+        .avatar-wrapper {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .avatar-wrapper img {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #ff001e;
+            box-shadow: 0 0 25px #ff001e;
+            position: relative;
+            z-index: 2;
+        }
+
+        .avatar-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid rgba(255, 0, 30, 0.6);
+            border-top: 3px solid #ffffff;
+            border-bottom: 3px solid #ff001e;
+            border-radius: 50%;
+            animation: spin 8s linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .online-dot {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            width: 18px;
+            height: 18px;
+            background-color: #ff001e;
+            border-radius: 50%;
+            border: 3px solid #0a0205;
+            box-shadow: 0 0 15px #ff001e;
+            z-index: 3;
+        }
+
+        /* İSİM VE UNVAN */
+        .player-name {
+            font-family: 'UnifrakturMaguntia', cursive;
+            font-size: 3.2rem;
+            color: #ffffff;
+            margin-bottom: 0px;
+            text-shadow: 0 0 20px #ff001e, 0 0 40px #8b0000;
+        }
+
+        .player-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.95rem;
+            color: #ff3b56;
+            margin-bottom: 30px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        /* BİLGİ KUTULARI */
+        .info-box {
+            background: linear-gradient(90deg, rgba(25, 0, 4, 0.9) 0%, rgba(5, 0, 2, 0.8) 100%);
+            border: 1px solid rgba(255, 0, 30, 0.3);
+            border-left: 4px solid #ff001e;
+            padding: 14px 18px;
+            margin-bottom: 14px;
+            border-radius: 6px;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .info-box:hover {
+            transform: translateX(6px);
+            border-left-color: #ffffff;
+            border-color: rgba(255, 0, 30, 0.8);
+            box-shadow: 0 0 20px rgba(255, 0, 30, 0.4);
+        }
+
+        .info-label {
+            color: #b08d93;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-value {
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 1.05rem;
+            font-family: 'Rajdhani', sans-serif;
+            text-shadow: 0 0 8px rgba(255, 0, 30, 0.6);
+        }
+
+        .steam-link {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .steam-link:hover {
+            color: #ff3b56;
+            text-decoration: underline;
+        }
+
+        /* KÜÇÜK İMZA YAZISI */
+        .footer-credits {
+            margin-top: 15px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.3);
+            letter-spacing: 1.5px;
+            text-transform: lowercase;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="fog-overlay"></div>
+    <canvas id="particles-canvas"></canvas>
+
+    <!-- GİRİŞ EKRANI -->
+    <div id="welcome-overlay">
+        <div class="lightning-bg"></div>
+        <div class="entry-container">
+            <div class="rune-circle"></div>
+            <button class="play-btn" onclick="startSite()">ENTER</button>
+        </div>
+    </div>
+
+    <!-- Müzik (muzik.mp3) -->
+    <audio id="bg-music" loop>
+        <source src="muzik.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- PROFiL KARTI -->
+    <div class="profile-card">
+        
+        <div class="avatar-wrapper">
+            <div class="avatar-ring"></div>
+            <img src="avatar.jpg" alt="DUFAN Avatar">
+            <div class="online-dot"></div>
+        </div>
+
+        <h2 class="player-name">DUFAN</h2>
+        <p class="player-title">⚔ Dark Knight ⚔</p>
+
+        <div class="info-box">
+            <span class="info-label">⚔ Favori Oyun</span>
+            <span class="info-value">CS2</span>
+        </div>
+
+        <div class="info-box">
+            <span class="info-label">🆔 Steam ID</span>
+            <span class="info-value">
+                <a href="https://steamcommunity.com/profiles/76561199197756844" target="_blank" class="steam-link">76561199197756844</a>
+            </span>
+        </div>
+
+        <div class="info-box">
+            <span class="info-label">📜 Status</span>
+            <span class="info-value">ALAYINIZA AMK</span>
+        </div>
+
+    </div>
+
+    <!-- İMZA -->
+    <div class="footer-credits">
+        created by sd.gokce
+    </div>
+
+    <script>
+        function startSite() {
+            const music = document.getElementById('bg-music');
+            music.play();
+
+            const overlay = document.getElementById('welcome-overlay');
+            overlay.style.opacity = '0';
+            overlay.style.visibility = 'hidden';
+        }
+
+        /* PARÇACIK EFEKTİ */
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const particles = [];
+        for (let i = 0; i < 75; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 2.5 + 0.5,
+                speedY: Math.random() * 1.5 + 0.5,
+                speedX: (Math.random() - 0.5) * 0.5,
+                opacity: Math.random()
+            });
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.y += p.speedY;
+                p.x += p.speedX;
+                if (p.y > canvas.height) {
+                    p.y = 0;
+                    p.x = Math.random() * canvas.width;
+                }
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 0, 30, ${p.opacity})`;
+                ctx.shadowBlur = 12;
+                ctx.shadowColor = '#ff001e';
+                ctx.fill();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+    </script>
+</body>
+</html>
